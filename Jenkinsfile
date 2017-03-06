@@ -19,6 +19,7 @@ pipeline {
         // The tool name must be pre-configured in Jenkins.
         // Under Manage Jenkins → Global Tool Configuration menu.
         maven 'M3'
+        jdk 'JDK8'
     }
     triggers {
         // “At 22:00 on every day-of-week from Monday through Friday.”
@@ -33,7 +34,14 @@ pipeline {
             steps {
                 echo 'Preparation stage called.'
 
+                sh '''
+                    echo "PATH = ${PATH}"
+                    echo "M2_HOME = ${M2_HOME}"
+                '''
+
                 script {
+                    git 'https://github.com/jglick/simple-maven-project-with-tests.git'
+
                     def browsers = ['chrome', 'firefox']
                     for (int i = 0; i < browsers.size(); ++i) {
                         echo "Mock call the ${browsers[i]} browser."
@@ -56,6 +64,14 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Build stage called.'
+
+                script {
+                    if (isUnix()) {
+                        sh "'${mvnHome}/bin/mvn' -Dmaven.test.failure.ignore clean package"
+                    } else {
+                        bat(/"${mvnHome}\bin\mvn" -Dmaven.test.failure.ignore clean package/)
+                    }
+                }
             }
         }
         stage('Analysis') {
@@ -66,6 +82,10 @@ pipeline {
         stage('Results') {
             steps {
                 echo 'Results stage called.'
+                script {
+                    junit '**/target/surefire-reports/TEST-*.xml'
+                    archive 'target/*.jar'
+                }
             }
         }
         stage('Deploy') {
