@@ -1,9 +1,9 @@
 pipeline {
-    agent { 
+    agent {
         // `agent { node { label 'labelName' } }` behaves the same as
         // `agent { label 'labelName' }, but `node` allows for
         // additional options (such as customWorkspace).
-        node { 
+        node {
             label 'linux'
         }
     }
@@ -11,6 +11,14 @@ pipeline {
         // The tool name must be pre-configured in Jenkins.
         // Under Manage Jenkins → Global Tool Configuration menu.
         maven 'M3'
+    }
+    triggers {
+        // “At 22:00 on every day-of-week from Monday through Friday.”
+        cron('0 22 * * 1-5')
+
+        // “At every minute past every 2nd hour from 9 through 16
+        // on every day-of-week from Monday through Friday.”
+        pollSCM('* 9-16/2 * * 1-5')
     }
     stages {
         stage('Preparation') {
