@@ -7,6 +7,15 @@ pipeline {
             label 'linux'
         }
     }
+    options {
+        // http://javadoc.jenkins.io/hudson/tasks/LogRotator.html
+        buildDiscarder(logRotator(daysToKeepStr: '3', numToKeepStr: '5'))
+        disableConcurrentBuilds()
+        // skipDefaultCheckout()
+        retry(3)
+        timeout(time: 1, unit: 'HOURS')
+        timestamps()
+    }
     tools {
         // The tool name must be pre-configured in Jenkins.
         // Under Manage Jenkins → Global Tool Configuration menu.
