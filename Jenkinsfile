@@ -1,5 +1,4 @@
 pipeline {
-    print "Parameter \${paramPipelineOption} = ${paramPipelineOption}"
     agent {
         // `agent { node { label 'labelName' } }` behaves the same as
         // `agent { label 'labelName' }, but `node` allows for
@@ -15,7 +14,6 @@ pipeline {
         // skipDefaultCheckout()
         retry(3)
         timeout(time: 1, unit: 'HOURS')
-        timestamps()
     }
     tools {
         // The tool name must be pre-configured in Jenkins.
