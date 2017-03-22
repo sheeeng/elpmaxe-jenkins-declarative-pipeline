@@ -1,4 +1,5 @@
 pipeline {
+    print "Parameter \${paramPipelineOption} = ${paramPipelineOption}"
     agent {
         // `agent { node { label 'labelName' } }` behaves the same as
         // `agent { label 'labelName' }, but `node` allows for
@@ -33,6 +34,25 @@ pipeline {
         stage('Preparation') {
             steps {
                 echo 'Preparation stage called.'
+
+                script {
+                    def browsers = ['chrome', 'firefox']
+                    for (int i = 0; i < browsers.size(); ++i) {
+                        echo "Mock call the ${browsers[i]} browser."
+                    }
+
+                    // List all `env` properties within Jenkins Pipeline job.
+                    // http://stackoverflow.com/a/42138466
+                    echo sh(
+                        returnStdout: true,
+                        script: 'env'
+                    )
+                    echo sh(
+                        returnStdout: true,
+                        script: 'echo \u2600 \u2620 \
+                            \u2776 \u2777 \u2778 \u2779'
+                    )
+                }
             }
         }
         stage('Build') {
