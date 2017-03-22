@@ -25,9 +25,9 @@ pipeline {
         // “At 22:00 on every day-of-week from Monday through Friday.”
         cron('0 22 * * 1-5')
 
-        // “At every minute past every 2nd hour from 9 through 16
-        // on every day-of-week from Monday through Friday.”
-        pollSCM('* 9-16/2 * * 1-5')
+        // “At every 5th minute past every hour from 7 through 23
+        // on every day-of-week from Monday through Saturday.
+        pollSCM('*/5 7-23 * * 1-6')
     }
     stages {
         stage('Preparation') {
