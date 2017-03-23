@@ -87,6 +87,8 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Build stage called.'
+                sh 'java -version'
+                sh 'mvn --version'
             }
         }
         stage('Analysis') {
