@@ -45,11 +45,6 @@ pipeline {
                 '''
 
                 sh '''
-                    cat /etc/group
-                    cat /etc/passwd
-                '''
-
-                sh '''
                     hostname
                     id
                     groups
@@ -75,20 +70,14 @@ pipeline {
                         script: 'echo \u2600 \u2620 \
                             \u2776 \u2777 \u2778 \u2779'
                     )
-
-                    sh '''
-                        hostname
-                        id
-                        groups
-                    '''
                 }
             }
         }
         stage('Build') {
             steps {
                 echo 'Build stage called.'
-                sh 'java -version'
-                sh 'mvn --version'
+                sh 'which java && java -version'
+                sh 'which mvn && mvn --version'
             }
         }
         stage('Analysis') {
