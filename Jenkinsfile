@@ -47,6 +47,7 @@ pipeline {
                 script {
                     git url: 'https://github.com/jglick/simple-maven-project-with-tests.git'
 
+                    // https://jenkins.io/doc/book/pipeline/syntax/#script
                     def browsers = ['chrome', 'firefox']
                     for (int i = 0; i < browsers.size(); ++i) {
                         echo "Mock call the ${browsers[i]} browser."
@@ -67,15 +68,26 @@ pipeline {
             }
         }
         stage('Build') {
+            // https://jenkins.io/doc/book/pipeline/jenkinsfile/#advanced-scripted-pipeline
+            parallel linux: {
+                    node('linux') {
+                        try {
+                            // sh "'${mvnHome}/bin/mvn' -Dmaven.test.failure.ignore clean package"
+                            sh "mvn -Dmaven.test.failure.ignore clean package"
+                        }
+                        finally {
+                            
+                        }
+                    }
+                },
+                windows: {
+                    node('windows') {
+                        // bat(/"${mvnHome}\bin\mvn" -Dmaven.test.failure.ignore clean package/)
+                        bat(/mvn -Dmaven.test.failure.ignore clean package/)
+                }
+            }
             steps {
                 echo 'Build stage called.'
-                if (isUnix()) {
-                    // sh "'${mvnHome}/bin/mvn' -Dmaven.test.failure.ignore clean package"
-                    sh "mvn -Dmaven.test.failure.ignore clean package"
-                } else {
-                    // bat(/"${mvnHome}\bin\mvn" -Dmaven.test.failure.ignore clean package/)
-                    bat(/mvn -Dmaven.test.failure.ignore clean package/)
-                }
             }
         }
         stage('Analysis') {
