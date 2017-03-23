@@ -7,6 +7,12 @@ pipeline {
             label 'linux'
         }
     }
+    environment {
+        // Get the Maven tool.
+        // ** NOTE: This 'M3' Maven tool must be configured
+        // **       in the global configuration.
+        mvnHome = tool 'M3'
+    }
     options {
         // http://javadoc.jenkins.io/hudson/tasks/LogRotator.html
         buildDiscarder(logRotator(daysToKeepStr: '3', numToKeepStr: '5'))
@@ -40,7 +46,7 @@ pipeline {
                 '''
 
                 script {
-                    git 'https://github.com/jglick/simple-maven-project-with-tests.git'
+                    git url: 'https://github.com/jglick/simple-maven-project-with-tests.git'
 
                     def browsers = ['chrome', 'firefox']
                     for (int i = 0; i < browsers.size(); ++i) {
@@ -66,10 +72,16 @@ pipeline {
                 echo 'Build stage called.'
 
                 script {
-                    if (isUnix()) {
-                        sh "'${mvnHome}/bin/mvn' -Dmaven.test.failure.ignore clean package"
-                    } else {
-                        bat(/"${mvnHome}\bin\mvn" -Dmaven.test.failure.ignore clean package/)
+                    withEnv(["PATH+MAVEN=${tool 'M3'}/bin"]) {
+                        echo sh(
+                            returnStdout: true,
+                            script: 'env | grep -i maven'
+                        )
+                        if (isUnix()) {
+                            sh "'${mvnHome}/bin/mvn' -Dmaven.test.failure.ignore clean package"
+                        } else {
+                            bat(/"${mvnHome}\bin\mvn" -Dmaven.test.failure.ignore clean package/)
+                        }
                     }
                 }
             }
