@@ -52,7 +52,7 @@ pipeline {
                         echo "Mock call the ${browsers[i]} browser."
                     }
 
-                    // List all `env` properties within Jenkins Pipeline job.
+                    // List all `env` properties within Jenkins Pipeline.
                     // http://stackoverflow.com/a/42138466
                     echo sh(
                         returnStdout: true,
@@ -69,15 +69,12 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Build stage called.'
-
-                script {
-                    if (isUnix()) {
-                        // sh "'${mvnHome}/bin/mvn' -Dmaven.test.failure.ignore clean package"
-                        sh "mvn -Dmaven.test.failure.ignore clean package"
-                    } else {
-                        // bat(/"${mvnHome}\bin\mvn" -Dmaven.test.failure.ignore clean package/)
-                        bat(/mvn -Dmaven.test.failure.ignore clean package/)
-                    }
+                if (isUnix()) {
+                    // sh "'${mvnHome}/bin/mvn' -Dmaven.test.failure.ignore clean package"
+                    sh "mvn -Dmaven.test.failure.ignore clean package"
+                } else {
+                    // bat(/"${mvnHome}\bin\mvn" -Dmaven.test.failure.ignore clean package/)
+                    bat(/mvn -Dmaven.test.failure.ignore clean package/)
                 }
             }
         }
