@@ -68,26 +68,28 @@ pipeline {
             }
         }
         stage('Build') {
-            // https://jenkins.io/doc/book/pipeline/jenkinsfile/#advanced-scripted-pipeline
-            parallel linux: {
-                    node('linux') {
-                        try {
-                            // sh "'${mvnHome}/bin/mvn' -Dmaven.test.failure.ignore clean package"
-                            sh "mvn -Dmaven.test.failure.ignore clean package"
-                        }
-                        finally {
-                            
-                        }
-                    }
-                },
-                windows: {
-                    node('windows') {
-                        // bat(/"${mvnHome}\bin\mvn" -Dmaven.test.failure.ignore clean package/)
-                        bat(/mvn -Dmaven.test.failure.ignore clean package/)
-                }
-            }
             steps {
                 echo 'Build stage called.'
+                script {
+                    // https://jenkins.io/doc/book/pipeline/jenkinsfile/#advanced-scripted-pipeline
+            parallel linux: {
+                    node('linux') {
+                            try {
+                                // sh "'${mvnHome}/bin/mvn' -Dmaven.test.failure.ignore clean package"
+                                sh "mvn -Dmaven.test.failure.ignore clean package"
+                            }
+                            finally {
+
+                            }
+                        }
+                    },
+                    windows: {
+                        node('windows') {
+                            // bat(/"${mvnHome}\bin\mvn" -Dmaven.test.failure.ignore clean package/)
+                            bat(/mvn -Dmaven.test.failure.ignore clean package/)
+                        }
+                    }
+                }
             }
         }
         stage('Analysis') {
