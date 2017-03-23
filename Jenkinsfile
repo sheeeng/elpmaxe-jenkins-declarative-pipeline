@@ -54,7 +54,7 @@ pipeline {
                 sh 'which mvn && mvn --version'
 
                 script {
-                    git url: 'https://github.com/jglick/simple-maven-project-with-tests.git'
+                    git url: 'https://github.com/sheeeng/elpmaxe-congenial-guacamole.git'
 
                     // https://jenkins.io/doc/book/pipeline/syntax/#script
                     def browsers = ['chrome', 'firefox']
