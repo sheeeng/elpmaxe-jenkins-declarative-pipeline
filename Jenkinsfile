@@ -71,18 +71,12 @@ pipeline {
                 echo 'Build stage called.'
 
                 script {
-                    withEnv(["PATH+MAVEN=${tool 'M3'}/bin"]) {
-                        echo sh(
-                            returnStdout: true,
-                            script: 'env | grep -i maven'
-                        )
-                        if (isUnix()) {
-                            // sh "'${mvnHome}/bin/mvn' -Dmaven.test.failure.ignore clean package"
-                            sh "'mvn' -Dmaven.test.failure.ignore clean package"
-                        } else {
-                            // bat(/"${mvnHome}\bin\mvn" -Dmaven.test.failure.ignore clean package/)
-                            // bat(/"mvn" -Dmaven.test.failure.ignore clean package/)
-                        }
+                    if (isUnix()) {
+                        // sh "'${mvnHome}/bin/mvn' -Dmaven.test.failure.ignore clean package"
+                        sh "mvn -Dmaven.test.failure.ignore clean package"
+                    } else {
+                        // bat(/"${mvnHome}\bin\mvn" -Dmaven.test.failure.ignore clean package/)
+                        bat(/mvn -Dmaven.test.failure.ignore clean package/)
                     }
                 }
             }
