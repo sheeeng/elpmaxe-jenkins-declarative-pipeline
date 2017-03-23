@@ -44,6 +44,17 @@ pipeline {
                     echo "M2_HOME = ${M2_HOME}"
                 '''
 
+                sh '''
+                    cat /etc/group
+                    cat /etc/passwd
+                '''
+
+                sh '''
+                    hostname
+                    id
+                    groups
+                '''
+
                 script {
                     git url: 'https://github.com/jglick/simple-maven-project-with-tests.git'
 
@@ -64,32 +75,18 @@ pipeline {
                         script: 'echo \u2600 \u2620 \
                             \u2776 \u2777 \u2778 \u2779'
                     )
+
+                    sh '''
+                        hostname
+                        id
+                        groups
+                    '''
                 }
             }
         }
         stage('Build') {
             steps {
                 echo 'Build stage called.'
-                script {
-                    // https://jenkins.io/doc/book/pipeline/jenkinsfile/#advanced-scripted-pipeline
-            parallel linux: {
-                    node('linux') {
-                            try {
-                                // sh "'${mvnHome}/bin/mvn' -Dmaven.test.failure.ignore clean package"
-                                sh "mvn -Dmaven.test.failure.ignore clean package"
-                            }
-                            finally {
-
-                            }
-                        }
-                    },
-                    windows: {
-                        node('windows') {
-                            // bat(/"${mvnHome}\bin\mvn" -Dmaven.test.failure.ignore clean package/)
-                            bat(/mvn -Dmaven.test.failure.ignore clean package/)
-                        }
-                    }
-                }
             }
         }
         stage('Analysis') {
@@ -100,10 +97,6 @@ pipeline {
         stage('Results') {
             steps {
                 echo 'Results stage called.'
-                script {
-                    junit '**/target/surefire-reports/TEST-*.xml'
-                    archive 'target/*.jar'
-                }
             }
         }
         stage('Deploy') {
