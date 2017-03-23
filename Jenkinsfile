@@ -50,6 +50,9 @@ pipeline {
                     groups
                 '''
 
+                sh 'which java && java -version'
+                sh 'which mvn && mvn --version'
+
                 script {
                     git url: 'https://github.com/jglick/simple-maven-project-with-tests.git'
 
@@ -76,8 +79,9 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Build stage called.'
-                sh 'which java && java -version'
-                sh 'which mvn && mvn --version'
+                // sh "'${mvnHome}/bin/mvn' -Dmaven.test.failure.ignore clean package"
+                sh "mvn -Dmaven.test.failure.ignore clean package"
+                // bat(/"${mvnHome}\bin\mvn" -Dmaven.test.failure.ignore clean package/)
             }
         }
         stage('Analysis') {
@@ -88,6 +92,8 @@ pipeline {
         stage('Results') {
             steps {
                 echo 'Results stage called.'
+                junit '**/target/surefire-reports/TEST-*.xml'
+                archive 'target/*.jar'
             }
         }
         stage('Deploy') {
