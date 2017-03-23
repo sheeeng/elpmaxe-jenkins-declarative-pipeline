@@ -80,7 +80,7 @@ pipeline {
             steps {
                 echo 'Build stage called.'
                 // sh "'${mvnHome}/bin/mvn' -Dmaven.test.failure.ignore clean package"
-                sh "mvn -Dmaven.test.failure.ignore clean package"
+                sh "mvn --batch-mode --define maven.test.failure.ignore clean package"
                 // bat(/"${mvnHome}\bin\mvn" -Dmaven.test.failure.ignore clean package/)
             }
         }
