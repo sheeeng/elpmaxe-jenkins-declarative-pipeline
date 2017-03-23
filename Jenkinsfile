@@ -8,10 +8,9 @@ pipeline {
         }
     }
     environment {
-        // Get the Maven tool.
-        // ** NOTE: This 'M3' Maven tool must be configured
-        // **       in the global configuration.
-        mvnHome = tool 'M3'
+        // https://github.com/jenkinsci/pipeline-model-definition-plugin/wiki/Environment-variables
+        LOREM = "lorem"
+        IPSUM = "ipsum"
     }
     options {
         // http://javadoc.jenkins.io/hudson/tasks/LogRotator.html
@@ -78,9 +77,11 @@ pipeline {
                             script: 'env | grep -i maven'
                         )
                         if (isUnix()) {
-                            sh "'${mvnHome}/bin/mvn' -Dmaven.test.failure.ignore clean package"
+                            // sh "'${mvnHome}/bin/mvn' -Dmaven.test.failure.ignore clean package"
+                            sh "'mvn' -Dmaven.test.failure.ignore clean package"
                         } else {
-                            bat(/"${mvnHome}\bin\mvn" -Dmaven.test.failure.ignore clean package/)
+                            // bat(/"${mvnHome}\bin\mvn" -Dmaven.test.failure.ignore clean package/)
+                            // bat(/"mvn" -Dmaven.test.failure.ignore clean package/)
                         }
                     }
                 }
